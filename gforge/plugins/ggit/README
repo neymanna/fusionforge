@@ -1,0 +1,29 @@
+
+ggit - Git Plugin for GForge v4.5.20+
+
+Author: Ferenc Székely <ferenc@maemo.org> 
+Date  : 2009-01-04
+
+*******
+WARNING
+*******
+The plugin is work in progress. It is not ready! Use it on your own risk!
+
+1. Introduction
+-------------------------------------------------------------------------------
+ggit is a Git plugin for GForge v4.5.20 or above. The plugin creates Git 
+repositories and provides some functionality to manage them.
+
+The project is hosted at https://garage.maemo.org/projects/ggit
+
+2. Installation
+-------------------------------------------------------------------------------
+For detailed instructions please see INSTALL.
+
+3. License
+-------------------------------------------------------------------------------
+The plugin is available under GPL v2. For details please see LICENSE. 
+
+4. Copyright
+-------------------------------------------------------------------------------
+Copyright notice can be found in COPYRIGHT. 

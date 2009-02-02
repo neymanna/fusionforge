@@ -1,0 +1,8 @@
+Status | Date       | Author       | Comment
+-------+------------+--------------+------------------------------------------
+ Open  | 2009-01-04 | ferenc       | Start using GForge's Tracker
+ Open  | 2009-01-04 | ferenc       | Re-write create_git.php and test it
+ Open  | 2009-01-04 | ferenc       | Find git-web or similar repo viewer
+ Open  | 2009-01-04 | ferenc       | Complete INSTALL documentation
+ Open  | 2009-01-04 | ferenc       | More test test test
+ Open  | 2009-01-04 | ferenc       | Debianize the plugin

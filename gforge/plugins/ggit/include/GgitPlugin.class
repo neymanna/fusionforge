@@ -1,0 +1,281 @@
+<?php
+/** ggit - Git Plugin for Gforge
+ *
+ * Copyright 2009 Ferenc Székely <ferenc@maemo.org>
+ *
+ * This file is not part of the GForge software.
+ *
+ * This plugin is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with the plugin. See the LICENSE file.
+ */
+  
+require_once('common/include/User.class');
+
+class GgitPlugin extends SCM {
+
+  function GgitPlugin () {
+
+    $this->SCM();
+
+    require_once('plugins/ggit/config.php') ;
+
+    $this->test_user = $test_user;
+  	
+    $this->name = 'ggit';
+    $this->text = 'Git';
+
+    $this->hooks[] = 'scm_page';
+    $this->hooks[] = 'scm_admin_update';
+    $this->hooks[] = 'scm_admin_page';
+    $this->hooks[] = 'scm_plugin';
+    //to be revised		
+    //$this->hooks[] = 'scm_stats';
+    
+    $this->git_server = $default_git_server ;
+    $this->git_root = $default_git_root;  
+    $this->use_dav = $default_git_use_dav;
+    $this->use_ssl = $default_git_use_ssl;  
+    $this->enabled_by_default = $enabled_by_default ;
+    $this->gitweb_server = $default_git_server;
+
+    $this->register();
+  }
+	
+  function CallHook ($hookname, $params) {
+    global $Language, $HTML ;
+    
+    switch ($hookname) {
+    case 'scm_page':
+      $group_id = $params['group_id'] ;
+      $this->display_scm_page ($group_id) ;
+      break ;
+    case 'scm_admin_update':
+      $this->scm_admin_update ($params) ;
+      break ;
+    case 'scm_admin_page':
+      $this->display_scm_admin_page ($params) ;
+      break ;
+    case 'scm_plugin':
+      $scm_plugins=& $params['scm_plugins'];
+      $scm_plugins[]=$this->name;
+      break;
+    default:
+      // Forgot something
+    }
+  }
+  
+  function display_scm_page ($group_id) {
+    global $Language, $HTML ;
+    
+    if ($this->test_mode()) {
+      exit;    
+    }
+
+    $project = & group_get_object($group_id);
+    if (!$project || !is_object($project)) {
+      return false;
+    } elseif ($project->isError()) {
+      return false;
+    }
+  
+    if ($project->usesPlugin ($this->name)) {
+    // GIT browser links must be displayed if
+    // project enables anon SCM or if logged-in
+    // user is a member of the group
+    $displayGitBrowser = $project->enableAnonSCM();
+    if(session_loggedin()) {
+    	$perm =& $project->getPermission(session_get_user());
+    	if ($perm && is_object($perm) && !$perm->isError() && $perm->isMember()) {
+        $displayGitBrowser = true;
+    	}
+    }
+  
+  // ######################## Table for summary info
+  ?>
+  <table width="100%">
+  <tr valign="top">
+  	<td width="65%">
+  	<?php
+  	print $Language->getText('plugin_ggit', 'documentation');
+  
+  	// ######################## Anonymous Git Instructions
+  	if ($project->enableAnonSCM()) {
+  		print $Language->getText('plugin_ggit', 'anongit');
+  		print '<p>';
+  		if ($this->use_dav == 'true') {
+  			print '<tt>git clone http' . (($this->use_ssl == 'true') ? 's' : '') . '://' . $this->git_server .  '/' . $this->git_root .'/'. $project->getUnixName() .'</tt><br/>';
+  		}
+  		print '</p>';
+  	}
+  
+  	// ######################## Developer Access
+  	if ($this->use_ssh) {
+  		echo $Language->getText('plugin_ggit', 'devgitssh');
+  		//print '<p><tt>git clone checkout git+ssh://<i>'.$Language->getText('plugin_ggit', 'developername').'</i>@' . $project->getSCMBox() . '/'. $this->git_root .'/'. $project->getUnixName().'</tt></p>' ;
+  	}
+  	if ($this->use_dav == 'true') {
+  		echo $Language->getText('plugin_ggit', 'devgitdav');
+  		print '<p><tt>git clone http' . (($this->use_ssl == 'true') ? 's' : '') . '://' .  $this->git_server . '/' . $this->git_root . '/' . $project->getUnixName().'</tt></p>' ;
+  	}
+  
+        echo (($this->use_ssl == 'true') ? "<p style='color: red'>" . $Language->getText('plugin_ggit', 'ssl_warning') . "</p>": '');
+
+	echo "<p style='color: red'>\n";
+        echo $Language->getText('plugin_ggit', 'netrc_warning') . "<br/>" . "\n";
+        echo $Language->getText('plugin_ggit', 'netrc_sample') . "\n";
+        echo "</p>";
+
+  	// ######################## SVN Snapshot
+  	if ($displayGitBrowser) {
+  		echo $Language->getText('plugin_ggit', 'under_devel', array($GLOBALS['sys_admin_email']));
+  	}
+  	?>
+  	</td>
+  
+  	<td width="35%" valign="top">
+  	<?php
+  	// ######################## Git Browsing
+  	echo $HTML->boxTop($Language->getText('plugin_ggit', 'history'));
+  	//echo $this->display_detailed_stats(array('group_id'=>$group_id)).'<p>';
+  	if ($displayGitBrowser) {
+  		echo $Language->getText('plugin_ggit', 'browsetree');
+  		echo $Language->getText('plugin_ggit', 'feature_devel');
+  		echo '<p>[<a href="'.$this->get_gitweb_url($group_id).'">'.$Language->getText('plugin_ggit', 'browseit').'</a>]</p>' ;
+  	}
+  
+  	echo $HTML->boxBottom();
+  	?>
+  	</td>
+  </tr>
+  </table>
+  <?php
+  }
+  }
+  
+  function scm_admin_update ($params) {
+    global $Language;
+
+    if ($this->test_mode()) {
+      exit;    
+    }
+
+    $group =& group_get_object($params['group_id']);
+
+    if (!$group || !is_object($group)) {
+      return false;
+    } elseif ($group->isError()) {
+      return false;
+    }
+    $project = $group->data_array['unix_group_name'];
+    if ($group->usesPlugin($this->name)) {
+      if ($params['ggit_enable_anon_git']) {
+      	$group->SetUsesAnonSCM(true);
+        $this->remote_command('git_repo_type', $project);
+      } else {
+      	$group->SetUsesAnonSCM(false);
+        $this->remote_command('git_repo_type', $project, 'private');
+      }
+    }
+  }
+  
+  function display_scm_admin_page ($params) {
+    global $Language ;
+
+    if ($this->test_mode()) {
+      exit;   
+    }
+    
+    $group =& group_get_object($params['group_id']);
+    if ($group->usesPlugin($this->name)) {
+  ?>
+  <p><input type="checkbox" name="ggit_enable_anon_git" value="1" <?php echo $this->check($group->enableAnonSCM()); ?> /><strong><?php echo $Language->getText('plugin_ggit', 'enable_anonymous_git') ?></strong></p>
+  <?php
+    }
+  }
+     
+  function get_gitweb_url($group_id) {
+    $project =& group_get_object($group_id);
+    return 'http' . ($this->use_ssl == 'true' ? 's' : '') . '://' . $this->gitweb_server . '/projects/' . $project->getUnixName() . '/gitweb';
+  }
+
+  function getDefaultServer() {
+    return $this->git_server;
+  } 
+  
+  function test_mode() {
+    $ret = 0;
+    if(session_loggedin()) {
+      $u = session_get_user();      
+      $username = $u->data_array['user_name'];
+      if ($this->test_user != '' && $this->test_user != $username) {
+        $ret = 1;
+      }
+    } else {
+      #$ret = 1;    
+    }
+    if ($ret) $this->print_test_message();
+    return $ret;
+  }  
+  
+  function print_test_message() {
+    echo "The Git plugin at " . $GLOBALS['sys_default_domain'] . " is in testing mode, not yet enabled for mass use. We apologize for the inconvenience.";  
+  }
+  
+  function check($var) {
+    if ($var) {
+      return 'checked="checked"';
+    } else {
+      return '';
+    }
+  }
+  
+  function remote_command($command, $project, $type = '') {
+    global $Language;
+    if ($command == '' || $project == '') {
+      echo "Project can not be changed";      
+      return;    
+    }
+    $cmd = '';        
+    switch ($command) {
+      case "git_repo_type":
+        echo $Language->getText('plugin_ggit', 'cmd_change_repo_type') . " ";
+        $cmd = "ssh -i " . $GLOBALS['sys_default_git_ssh_key'];
+        $cmd .= " " . $GLOBALS['sys_default_git_remote_user'];
+        $cmd .= "@" . $GLOBALS['sys_default_git_server'];
+        $cmd .= " " . $GLOBALS['sys_default_git_type_command'];
+      break;
+      default:
+        echo "No such command";      
+      break;    
+    }   
+
+    if ($cmd != '') { 
+      $cmd .= " " . $project;
+      if ($type == 'private') {
+        $cmd .= " private";      
+      }
+      $cmd .= " >/dev/null 2>&1";
+      #echo "\n". $cmd . "\n";
+      system($cmd, $ret);
+
+      if ( ! $ret ) {
+        echo $Language->getText('plugin_ggit', 'cmd_ok');              
+      } else {
+        echo $Language->getText('plugin_ggit', 'cmd_failed');                    
+      } 
+    }   
+  }
+
+  /***
+  * TODO: Stats related functions need to be checked / changed / implemented ...
+  *
+  *
+  */
+}
+
+?>

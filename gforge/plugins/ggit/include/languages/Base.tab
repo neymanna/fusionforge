@@ -1,0 +1,35 @@
+plugin_ggit	anongit	<p><b>Anonymous Git Access</b></p><p>The project's Git repository can be checked out through anonymous access with the following command(s).</p>
+plugin_ggit	git_repository	Git Repository
+plugin_ggit	developername	developername
+plugin_ggit	error_only_projects_can_use_git	Error: Only projects can use Git
+plugin_ggit	error_this_project_has_turned_off	Error: This project has turned off Git
+plugin_ggit	error_repository_not_created_yet	This repository has not been created yet.
+plugin_ggit	history	Repository History
+plugin_ggit	nohistory	This project has no Git history.
+plugin_ggit	section	Project: $1
+plugin_ggit	title	Git
+plugin_ggit	admin	Administration
+plugin_ggit	download_snapshot	Download The Nightly Git Tree Snapshot
+plugin_ggit	documentation	<p>Documentation for Git is available <a href="http://git.or.cz/gitwiki/GitDocumentation/">here</a>.</p>
+plugin_ggit	devgitssh	<p><b>Developer Git Access via SSH</b></p><p>Project developers can commit to the Git tree via this method. SSH must be installed on your client machine. Substitute <i>developername</i> with the proper values. Enter your site password when prompted.</p>
+plugin_ggit	devgitdav	<p><b>Developer Git Access via DAV</b></p><p>Project developers can commit to the Git tree via this method. Substitute <i>developername</i> with the proper values. Enter your site password when prompted.</p>
+plugin_ggit	enable_git	Use Git
+plugin_ggit	enable_anonymous_git	Enable Anonymous Access
+plugin_ggit	browseit	Browse Git Repository
+plugin_ggit	browsetree	<b>Browse the Git Tree</b><p>Browsing the Git tree gives you a great view into the current status of this project's code. You may also view the complete histories of any file in the repository.</p>
+plugin_ggit	realname	Name
+plugin_ggit	adds	Adds
+plugin_ggit	commits	Updates
+plugin_ggit	unknown	Unknown
+plugin_ggit	total	Total
+plugin_ggit	git_updates	<strong>$1</strong> updates, <strong>$2</strong> adds
+plugin_ggit	under_devel	Git support for garage is still under development. If you experience problems please drop an email to <strong>$1</strong>
+plugin_ggit	feature_devel	<strong>This feature is under development.</strong>
+plugin_ggit	contact	If you experience problems with Git on this site please contact the developers at: https://garage.maemo.org/projects/ggit 
+plugin_ggit	ssl_warning	If you experience problems with 'git clone' or 'git push' please set the GIT_SSL_NO_VERIFY environment variable to 1
+plugin_ggit	netrc_warning	Please make sure you have filled in your garage credentials to ~/.netrc. The info that needs to be added there is the following:
+plugin_ggit	netrc_sample	<pre>machine git.maemo.org<br/>login __garage user name__<br/>password __garage password__</pre>
+plugin_ggit	test_mode	The Git plugin is in test mode. The SCM management pages are not yet available for mass use. Please stay tuned.
+plugin_ggit	cmd_change_repo_type	Changing the repository settings
+plugin_ggit	cmd_ok	<strong>succeeded</strong>
+plugin_ggit	cmd_failed	<strong>failed</strong>

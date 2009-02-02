@@ -1,0 +1,97 @@
+
+ggit - Git Plugin for GForge
+
+Author: Ferenc Székely <ferenc@maemo.org> 
+Date  : 2009-01-04
+
+Installation Instructions
+-------------------------------------------------------------------------------
+
+Table of Contents
+-----------------
+1. Prerequistites
+2. Git server setup
+3. Authentication
+4. Changes in local.inc on the GForge server
+5. Enable the plugin in GForge
+6. Client side considerations
+
+
+*******
+WARNING
+*******
+The plugin is work in progress. Use it on your own risk!
+
+
+1. Prerequistites
+-------------------------------------------------------------------------------
+****
+TODO
+
+You can also take a look at the ggit project's wiki pages:
+https://garage.maemo.org/plugins/wiki/index.php?id=841&type=g
+
+
+2. Git server setup
+-------------------------------------------------------------------------------
+****
+TODO
+
+The current implementation supports / documents Git access thru SSL using 
+WebDAV.
+
+
+3. Authentication
+-------------------------------------------------------------------------------
+****
+TODO
+
+
+4. Changes in local.inc on the GForge server
+-------------------------------------------------------------------------------
+Please add the followings to GForge's local.inc configuration file:
+
+$sys_default_git_server='git.localgarage';
+$sys_default_git_root='projects';
+$sys_default_git_use_dav='true';
+$sys_default_git_use_ssl='true';
+$sys_default_git_remote_user='www-data';
+$sys_default_git_ssh_key='/home/www-data/.ssh/id_rsa';
+$sys_default_git_type_command='/usr/local/bin/git_repo_type.sh';
+
+$sys_default_git_server specifies the server where the Git repositories will 
+be hosted. It can also be set to 'localhost', if the local machine runs Git.
+
+$sys_default_git_root is related again the web server configuration. If you 
+specified a subdirectory for the repositories, then add it here.
+
+Cloning the git repository based on the example configuration above will happen
+like this:
+
+ git clone https://git.localgarage/projects/someproject
+
+$sys_default_git_remote_user, $sys_default_git_ssh_key are necessary to 
+complete the repository access changes from within the SCM admin page. 
+
+Setting the "Enable Anonymous Access" will trigger an action on the remote 
+Git server.
+In the example configuration the action is run by 'www-data' who connects to 
+'git.localgarage' using the '/home/www-data/.ssh/id_rsa' ssh key. On the server
+'www-data' will run the '/usr/local/bin/git_repo_type.sh' script to reset the 
+Apache settings for the repository in question.
+
+ 
+5. Enable the plugin in GForge
+-------------------------------------------------------------------------------
+The 'Site Admin' tab on the GForge web interface has a 'Plugin Manager'
+page where you can activate plugins on a site wide basis. 
+ 
+Be sure to do that if you want this plugin to be available to projects.
+
+
+6. Client side considerations
+-------------------------------------------------------------------------------
+****
+TODO
+
+

@@ -1,0 +1,10 @@
+The ggit Git Plugin for GForge is based on the scmsvn plugin:
+http://gforge.org/scm/viewvc.php/tags/v4_5_20/gforge/plugins/scmsvn/?root=gforge
+
+Credits and thanks go to the original authors. 
+
+
+The ggit Git Plugin for GForge was written by:
+
+Ferenc Székely <ferenc@maemo.org>
+
