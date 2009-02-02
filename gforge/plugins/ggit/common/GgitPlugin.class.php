@@ -14,7 +14,7 @@
  * along with the plugin. See the LICENSE file.
  */
   
-require_once('common/include/User.class');
+require_once('common/include/User.class.php');
 
 class GgitPlugin extends SCM {
 
@@ -40,6 +40,7 @@ class GgitPlugin extends SCM {
     $this->git_root = $default_git_root;  
     $this->use_dav = $default_git_use_dav;
     $this->use_ssl = $default_git_use_ssl;  
+    $this->use_ssh = false; // TODO: missing in code.
     $this->enabled_by_default = $enabled_by_default ;
     $this->gitweb_server = $default_git_server;
 
@@ -101,11 +102,11 @@ class GgitPlugin extends SCM {
   <tr valign="top">
   	<td width="65%">
   	<?php
-  	print $Language->getText('plugin_ggit', 'documentation');
+  	print _('<p>Documentation for Git is available <a href="http://git.or.cz/gitwiki/GitDocumentation/">here</a>.</p>');
   
   	// ######################## Anonymous Git Instructions
   	if ($project->enableAnonSCM()) {
-  		print $Language->getText('plugin_ggit', 'anongit');
+  		print _('<p><b>Anonymous Git Access</b></p><p>The project\'s Git repository can be checked out through anonymous access with the following command(s).</p>');
   		print '<p>';
   		if ($this->use_dav == 'true') {
   			print '<tt>git clone http' . (($this->use_ssl == 'true') ? 's' : '') . '://' . $this->git_server .  '/' . $this->git_root .'/'. $project->getUnixName() .'</tt><br/>';
@@ -115,24 +116,24 @@ class GgitPlugin extends SCM {
   
   	// ######################## Developer Access
   	if ($this->use_ssh) {
-  		echo $Language->getText('plugin_ggit', 'devgitssh');
-  		//print '<p><tt>git clone checkout git+ssh://<i>'.$Language->getText('plugin_ggit', 'developername').'</i>@' . $project->getSCMBox() . '/'. $this->git_root .'/'. $project->getUnixName().'</tt></p>' ;
+  		echo _('<p><b>Developer Git Access via SSH</b></p><p>Project developers can commit to the Git tree via this method. SSH must be installed on your client machine. Substitute <i>developername</i> with the proper values. Enter your site password when prompted.</p>');
+  		//print '<p><tt>git clone checkout git+ssh://<i>'._('developername').'</i>@' . $project->getSCMBox() . '/'. $this->git_root .'/'. $project->getUnixName().'</tt></p>' ;
   	}
   	if ($this->use_dav == 'true') {
-  		echo $Language->getText('plugin_ggit', 'devgitdav');
+  		echo _('<p><b>Developer Git Access via DAV</b></p><p>Project developers can commit to the Git tree via this method. Substitute <i>developername</i> with the proper values. Enter your site password when prompted.</p>');
   		print '<p><tt>git clone http' . (($this->use_ssl == 'true') ? 's' : '') . '://' .  $this->git_server . '/' . $this->git_root . '/' . $project->getUnixName().'</tt></p>' ;
   	}
   
-        echo (($this->use_ssl == 'true') ? "<p style='color: red'>" . $Language->getText('plugin_ggit', 'ssl_warning') . "</p>": '');
+        echo (($this->use_ssl == 'true') ? "<p style='color: red'>" . _('If you experience problems with \'git clone\' or \'git push\' please set the GIT_SSL_NO_VERIFY environment variable to 1') . "</p>": '');
 
 	echo "<p style='color: red'>\n";
-        echo $Language->getText('plugin_ggit', 'netrc_warning') . "<br/>" . "\n";
-        echo $Language->getText('plugin_ggit', 'netrc_sample') . "\n";
+        echo _('Please make sure you have filled in your garage credentials to ~/.netrc. The info that needs to be added there is the following:') . "<br/>" . "\n";
+        echo _('<pre>machine git.maemo.org<br/>login __garage user name__<br/>password __garage password__</pre>') . "\n";
         echo "</p>";
 
   	// ######################## SVN Snapshot
   	if ($displayGitBrowser) {
-  		echo $Language->getText('plugin_ggit', 'under_devel', array($GLOBALS['sys_admin_email']));
+  		printf(_('Git support for garage is still under development. If you experience problems please drop an email to <strong>%1$s</strong>'), $GLOBALS['sys_admin_email']);
   	}
   	?>
   	</td>
@@ -140,12 +141,12 @@ class GgitPlugin extends SCM {
   	<td width="35%" valign="top">
   	<?php
   	// ######################## Git Browsing
-  	echo $HTML->boxTop($Language->getText('plugin_ggit', 'history'));
+  	echo $HTML->boxTop(_('Repository History'));
   	//echo $this->display_detailed_stats(array('group_id'=>$group_id)).'<p>';
   	if ($displayGitBrowser) {
-  		echo $Language->getText('plugin_ggit', 'browsetree');
-  		echo $Language->getText('plugin_ggit', 'feature_devel');
-  		echo '<p>[<a href="'.$this->get_gitweb_url($group_id).'">'.$Language->getText('plugin_ggit', 'browseit').'</a>]</p>' ;
+  		echo _('<b>Browse the Git Tree</b><p>Browsing the Git tree gives you a great view into the current status of this project\'s code. You may also view the complete histories of any file in the repository.</p>');
+  		echo _('<strong>This feature is under development.</strong>');
+  		echo '<p>[<a href="'.$this->get_gitweb_url($group_id).'">'._('Browse Git Repository').'</a>]</p>' ;
   	}
   
   	echo $HTML->boxBottom();
@@ -193,7 +194,7 @@ class GgitPlugin extends SCM {
     $group =& group_get_object($params['group_id']);
     if ($group->usesPlugin($this->name)) {
   ?>
-  <p><input type="checkbox" name="ggit_enable_anon_git" value="1" <?php echo $this->check($group->enableAnonSCM()); ?> /><strong><?php echo $Language->getText('plugin_ggit', 'enable_anonymous_git') ?></strong></p>
+  <p><input type="checkbox" name="ggit_enable_anon_git" value="1" <?php echo $this->check($group->enableAnonSCM()); ?> /><strong><?php echo _('Enable Anonymous Access') ?></strong></p>
   <?php
     }
   }
@@ -243,7 +244,7 @@ class GgitPlugin extends SCM {
     $cmd = '';        
     switch ($command) {
       case "git_repo_type":
-        echo $Language->getText('plugin_ggit', 'cmd_change_repo_type') . " ";
+        echo _('Changing the repository settings') . " ";
         $cmd = "ssh -i " . $GLOBALS['sys_default_git_ssh_key'];
         $cmd .= " " . $GLOBALS['sys_default_git_remote_user'];
         $cmd .= "@" . $GLOBALS['sys_default_git_server'];
@@ -264,9 +265,9 @@ class GgitPlugin extends SCM {
       system($cmd, $ret);
 
       if ( ! $ret ) {
-        echo $Language->getText('plugin_ggit', 'cmd_ok');              
+        echo _('<strong>succeeded</strong>');              
       } else {
-        echo $Language->getText('plugin_ggit', 'cmd_failed');                    
+        echo _('<strong>failed</strong>');                    
       } 
     }   
   }

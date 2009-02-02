@@ -14,7 +14,8 @@
  * along with the plugin. See the LICENSE file.
  */
 
-require_once ($GLOBALS['sys_plugins_path'].'/ggit/include/GgitPlugin.class') ;
+global $gfplugins;
+require_once $gfplugins.'ggit/common/GgitPlugin.class.php' ;
 
 $GgitPluginObject = new GgitPlugin();
 
