@@ -21,8 +21,8 @@ $sys_default_git_type_command='/usr/local/bin/git_repo_type.sh';
 
 $enabled_by_default = 1;
 
-$default_git_server  = 'git.localgarage';
-$default_git_root    = 'projects' ;
+$default_git_server  = $GLOBALS['sys_default_domain'];
+$default_git_root    = 'git' ;
 $default_git_use_dav = true ;
 $default_git_use_ssl = true ;
 

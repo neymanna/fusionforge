@@ -43,7 +43,10 @@ CMD_PREFIX=''
 CMD_PREFIX_ROOT='' # could be 'sudo -u root '
 
 # The location of the git repositories on the server
-GIT_REPO="/var/lib/git/projects"
+GIT_REPO="/gitroot"
+
+APACHE_USER=apache
+APACHE_GROUP=apache
 
 # The web prefix to access the ready git repos. Suggested to use SSL!
 WEB_PREFIX="http://git.localgarage/projects"
@@ -90,12 +93,12 @@ $CMD_PREFIX git --bare init
 echo "git --bare update-server-info" > /tmp/post-update
 $CMD_PREFIX cp /tmp/post-update hooks/post-update
 $CMD_PREFIX chmod +x hooks/post-update
-$CMD_PREFIX chown www-data:www-data hooks/post-update
+$CMD_PREFIX chown $APACHE_USER:$APACHE_GROUP hooks/post-update
 rm -rf /tmp/post-update
 
 # very important
 cd $GIT_REPO/$PROJECT
-$CMD_PREFIX chown -R www-data:www-data .
+$CMD_PREFIX chown -R $APACHE_USER:$APACHE_GROUP .
 
 # create a master branch
 cd /tmp
@@ -111,7 +114,7 @@ $CMD_PREFIX_ROOT rm -rf $PROJECT
 
 # very important again
 cd $GIT_REPO/$PROJECT
-$CMD_PREFIX chown -R www-data:www-data .
+$CMD_PREFIX chown -R $APACHE_USER:$APACHE_GROUP .
 
 # add the config for the private project and restart apache2
 GIT_REPO_TYPE=`which git_repo_type.sh`

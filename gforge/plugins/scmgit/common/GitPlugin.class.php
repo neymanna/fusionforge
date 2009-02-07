@@ -107,9 +107,9 @@ class GitPlugin extends SCM {
 
 		// ######################## Anonymous Git Instructions
 		if ($project->enableAnonSCM()) {
-			print _('<p><b>Anonymous Git Access</b></p><p>The project\'s Git repository can be checked out through anonymous access with the following command(s).</p>');
+			print _('<p><b>Anonymous Git Access</b></p><p>The project\'s Git repository can be checked out through anonymous access with the following command.</p>');
 			print '<p>';
-			if ($this->use_dav == 'true') {
+			if ($this->use_dav) {
 				print '<tt>git clone http' . (($this->use_ssl == 'true') ? 's' : '') . '://' . $this->git_server .  '/' . $this->git_root .'/'. $project->getUnixName() .'</tt><br/>';
 			}
 			print '</p>';
@@ -120,16 +120,16 @@ class GitPlugin extends SCM {
 			echo _('<p><b>Developer Git Access via SSH</b></p><p>Project developers can commit to the Git tree via this method. SSH must be installed on your client machine. Substitute <i>developername</i> with the proper values. Enter your site password when prompted.</p>');
 			//print '<p><tt>git clone checkout git+ssh://<i>'._('developername').'</i>@' . $project->getSCMBox() . '/'. $this->git_root .'/'. $project->getUnixName().'</tt></p>' ;
 		}
-		if ($this->use_dav == 'true') {
-			echo _('<p><b>Developer Git Access via DAV</b></p><p>Project developers can commit to the Git tree via this method. Substitute <i>developername</i> with the proper values. Enter your site password when prompted.</p>');
+		if ($this->use_dav) {
+			echo _('<p><b>Developer Git Access via DAV</b></p><p>Project developers can commit to the Git tree via this method. Enter your site password when prompted.</p>');
 			print '<p><tt>git clone http' . (($this->use_ssl == 'true') ? 's' : '') . '://' .  $this->git_server . '/' . $this->git_root . '/' . $project->getUnixName().'</tt></p>' ;
 		}
 
-		echo (($this->use_ssl == 'true') ? "<p style='color: red'>" . _('If you experience problems with \'git clone\' or \'git push\' please set the GIT_SSL_NO_VERIFY environment variable to 1') . "</p>": '');
+		echo (($this->use_ssl) ? "<p style='color: red'>" . _('If you experience problems with \'git clone\' or \'git push\' please set the GIT_SSL_NO_VERIFY environment variable to 1') . "</p>": '');
 
-		echo "<p style='color: red'>\n";
+		echo '<p style="color: red">';
 		echo _('Please make sure you have filled in your garage credentials to ~/.netrc. The info that needs to be added there is the following:') . "<br/>" . "\n";
-		echo _('<pre>machine git.maemo.org<br/>login __garage user name__<br/>password __garage password__</pre>') . "\n";
+		echo '<pre>'._('machine git.maemo.org<br/>login __garage user name__<br/>password __garage password__') . "</pre>\n";
 		echo "</p>";
 
 		// ######################## SVN Snapshot
@@ -172,7 +172,7 @@ class GitPlugin extends SCM {
 		}
 		$project = $group->data_array['unix_group_name'];
 		if ($group->usesPlugin($this->name)) {
-			if ($params['ggit_enable_anon_git']) {
+			if ($params['scmgit_enable_anon_git']) {
 				$group->SetUsesAnonSCM(true);
 				$this->remote_command('git_repo_type', $project);
 			} else {
@@ -192,7 +192,7 @@ class GitPlugin extends SCM {
 		$group =& group_get_object($params['group_id']);
 		if ($group->usesPlugin($this->name)) {
 			?>
-<p><input type="checkbox" name="ggit_enable_anon_git" value="1"
+<p><input type="checkbox" name="scmgit_enable_anon_git" value="1"
 			<?php echo $this->check($group->enableAnonSCM()); ?> /><strong><?php echo _('Enable Anonymous Access') ?></strong></p>
 			<?php
 		}

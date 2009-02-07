@@ -1,0 +1,36 @@
+#
+# FusionForge
+# Copyright 2009 (c) Alain Peyrat
+# http://fusionforge.org/
+
+# Change path to the FusionForge directory.
+FFORGE="/opt/gforge"
+
+PHP="/usr/bin/php -f"
+
+# Don't mail command output to anyone.
+MAILTO=""
+
+#
+# Create the blank git trees for SVN-over-DAV
+#   (all repositories owned by apache)
+#
+27 * * * * root $PHP $FFORGE/plugins/scmgit/cronjobs/create_git.php
+
+#
+# Create SVN snapshots
+#
+# SVNROOT and SCMSNAPSHOTSDIR variables are hard-coded in the script, so
+# you'll have to edit the script if necessary.
+#
+#35 3 * * * root /bin/sh $FFORGE/plugins/scmsvn/cronjobs/snapshots.sh generate
+
+#
+# Daily Git stats collection
+#
+#20 1 * * * root $PHP $FFORGE/plugins/scmsvn/cronjobs/svn-stats.php
+
+#
+# Create Git tarballs
+#
+#5 3 * * * root $PHP $FFORGE/plugins/scmsvn/cronjobs/tarballs.php
