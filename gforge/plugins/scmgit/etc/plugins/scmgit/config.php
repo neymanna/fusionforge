@@ -1,9 +1,10 @@
 <?php
-/** ggit - Git Plugin for Gforge
+/** scmgit - Git Plugin for FusionForge
  *
  * Copyright 2009 Ferenc Székely <ferenc@maemo.org>
+ * Copyright 2009 Alain Peyrat <aljeux@free.fr>
  *
- * This file is not part of the GForge software.
+ * This file is part of the FusionForge software.
  *
  * This plugin is free software; you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
@@ -14,12 +15,16 @@
  * along with the plugin. See the LICENSE file.
  */
 
+$sys_default_git_remote_user='www-data';
+$sys_default_git_ssh_key='/home/www-data/.ssh/id_rsa';
+$sys_default_git_type_command='/usr/local/bin/git_repo_type.sh';
+
 $enabled_by_default = 1;
 
-$default_git_server = $GLOBALS['sys_default_git_server'] ;
-$default_git_root = $GLOBALS['sys_default_git_root'] ;
-$default_git_use_dav = $GLOBALS['sys_default_git_use_dav'] ;
-$default_git_use_ssl = $GLOBALS['sys_default_git_use_ssl'] ;
+$default_git_server  = 'git.localgarage';
+$default_git_root    = 'projects' ;
+$default_git_use_dav = true ;
+$default_git_use_ssl = true ;
 
 //only this user is able to set Git as an SCM system upon project registration
 //set it blank if you want to allow it to everybody 

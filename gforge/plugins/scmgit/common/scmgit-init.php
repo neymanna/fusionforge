@@ -1,9 +1,10 @@
 <?php
-/** ggit - Git Plugin for Gforge
+/** scmgit - Git Plugin for FusionForge
  *
  * Copyright 2009 Ferenc Székely <ferenc@maemo.org>
+ * Copyright 2009 Alain Peyrat <aljeux@free.fr>
  *
- * This file is not part of the GForge software.
+ * This file is part of the FusionForge software.
  *
  * This plugin is free software; you can redistribute it
  * and/or modify it under the terms of the GNU General Public License
@@ -15,10 +16,10 @@
  */
 
 global $gfplugins;
-require_once $gfplugins.'ggit/common/GgitPlugin.class.php' ;
+require_once $gfplugins.'scmgit/common/GitPlugin.class.php' ;
 
-$GgitPluginObject = new GgitPlugin();
+$gitPluginObject = new GitPlugin();
 
-register_plugin($GgitPluginObject);
+register_plugin($gitPluginObject);
 
 ?>

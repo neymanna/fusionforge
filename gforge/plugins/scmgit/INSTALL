@@ -1,7 +1,7 @@
 
-ggit - Git Plugin for GForge
+scmgit - Git Plugin for FusionForge
 
-Author: Ferenc Székely <ferenc@maemo.org> 
+Original Author: Ferenc Székely <ferenc@maemo.org> 
 Date  : 2009-01-04
 
 Installation Instructions
@@ -49,7 +49,7 @@ TODO
 
 4. Changes in local.inc on the GForge server
 -------------------------------------------------------------------------------
-Please add the followings to GForge's local.inc configuration file:
+Please add the followings to FusionForge's local.inc configuration file:
 
 $sys_default_git_server='git.localgarage';
 $sys_default_git_root='projects';
@@ -81,9 +81,9 @@ In the example configuration the action is run by 'www-data' who connects to
 Apache settings for the repository in question.
 
  
-5. Enable the plugin in GForge
+5. Enable the plugin in FusionForge
 -------------------------------------------------------------------------------
-The 'Site Admin' tab on the GForge web interface has a 'Plugin Manager'
+The 'Site Admin' tab on the FusionForge web interface has a 'Plugin Manager'
 page where you can activate plugins on a site wide basis. 
  
 Be sure to do that if you want this plugin to be available to projects.

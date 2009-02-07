@@ -1,3 +1,6 @@
+The scmgit is based on ggit.
+
+
 The ggit Git Plugin for GForge is based on the scmsvn plugin:
 http://gforge.org/scm/viewvc.php/tags/v4_5_20/gforge/plugins/scmsvn/?root=gforge
 
